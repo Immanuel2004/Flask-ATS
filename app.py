@@ -5,13 +5,16 @@ import mysql.connector
 import subprocess
 import json
 from db_config import get_db_connector
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'pdf','docx'}
 
-# from db_config import get_db_connection
+# Create uploads directory if it doesn't exist
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.',1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -32,12 +35,6 @@ def upload():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'],filename)
         file.save(filepath)
 
-        # result = subprocess.run(
-        #     ['python','nlp/process_resume.py',filepath,job],
-        #     capture_output=True,
-        #     text=True
-        # )
-        # # nlp_output = json.loads(result.stdout)
         result = subprocess.run(
             ['python','nlp/process_resume.py',filepath,job],
             capture_output=True,
@@ -51,8 +48,6 @@ def upload():
             nlp_output = json.loads(result.stdout)
         except json.JSONDecodeError as e:
             return jsonify({'error': 'Invalid JSON from NLP script', 'details': str(e)}), 500
-
-        
 
         conn = get_db_connector()
         cursor = conn.cursor()
