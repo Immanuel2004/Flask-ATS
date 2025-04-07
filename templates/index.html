@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applicant Tracking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h2>Apply for a Job</h2>
+
+    <form id="applicationForm" method="POST" enctype="multipart/form-data" action="/submit">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="job">Select the Job Role:</label>
+        <select name="job" id="job">
+            <option value="Software Engineer">Software Engineer</option>
+            <option value="Data Scientist">Data Scientist</option>
+            <option value="Product Manager">Product Manager</option>
+        </select>
+
+        <label for="resume">Upload Resume (PDF/DOCX):</label>
+        <input type="file" name="resume" id="resume" accept=".pdf,.docx" required>
+
+        <button type="submit">Submit Application</button>
+    </form>
+
+    <div id="resultContainer" style="display: none; margin-top: 20px;">
+        <h3>Resume Match Analysis</h3>
+        <canvas id="donutChart" width="200" height="200"></canvas>
+        <p id="suggestions"></p>
+    </div>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
